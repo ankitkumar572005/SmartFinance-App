@@ -23,8 +23,12 @@ function App() {
       if (!response.ok) throw new Error('Failed to fetch data');
       const data = await response.json();
       setTransactions(data);
+      setError(null);
     } catch (err) {
-      setError(err.message);
+      console.warn("Backend unavailable, falling back to local storage");
+      const localData = JSON.parse(localStorage.getItem('smartfinance_data')) || [];
+      setTransactions(localData);
+      setError("Demo Mode: Backend offline. Saving data locally in browser.");
     } finally {
       setLoading(false);
     }
@@ -48,11 +52,17 @@ function App() {
       const addedTransaction = await response.json();
       setTransactions([addedTransaction, ...transactions]);
       
-      // Reset form
       setTitle('');
       setAmount('');
     } catch (err) {
-      setError(err.message);
+      // Demo Mode Fallback
+      const newTxFallback = { ...newTransaction, id: Date.now() };
+      const updatedTransactions = [newTxFallback, ...transactions];
+      setTransactions(updatedTransactions);
+      localStorage.setItem('smartfinance_data', JSON.stringify(updatedTransactions));
+      
+      setTitle('');
+      setAmount('');
     }
   };
 
@@ -63,7 +73,10 @@ function App() {
       
       setTransactions(transactions.filter(t => t.id !== id));
     } catch (err) {
-      setError(err.message);
+      // Demo Mode Fallback
+      const updatedTransactions = transactions.filter(t => t.id !== id);
+      setTransactions(updatedTransactions);
+      localStorage.setItem('smartfinance_data', JSON.stringify(updatedTransactions));
     }
   };
 
