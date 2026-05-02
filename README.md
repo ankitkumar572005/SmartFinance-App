@@ -1,5 +1,7 @@
 # SmartFinance Dashboard (Full-Stack Application)
 
+**Live Demo:** [https://smartfinance-app.vercel.app](https://smartfinance-app.vercel.app)
+
 A complete Full-Stack Personal Finance Tracker built for an internship project. It allows users to add expenses, categorize them, and track their total spending in real-time.
 
 ## 🚀 Tech Stack
